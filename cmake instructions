@@ -1,0 +1,20 @@
+#Configure cmake build
+
+cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -Dtesting=ON -Droottest=ON -DCMAKE_INSTALL_PREFIX=myinstall -B mybuild -S root
+
+#Build and install
+
+cmake --build mybuild --target install -j12
+
+#source
+
+source myinstall/bin/thisroot.sh
+
+g++ filename.cpp $(root-config --cflags --libs)
+
+https://stackoverflow.com/questions/3329943/what-are-the-differences-between-git-branch-fork-fetch-merge-rebase-and-clon
+
+# rbatchgenerator tests
+ROOT_ADD_PYUNITTEST(batchgen myothertest.py)
+
+https://github.com/keras-team/keras/blob/v2.15.0/keras/engine/data_adapter.py#L842
