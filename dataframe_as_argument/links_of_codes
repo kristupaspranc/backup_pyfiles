@@ -1,0 +1,8 @@
+Kaggle competitions just pass the data, no matter how big the data is.
+https://www.kaggle.com/code/barirahzainal/my-project-machine-learning-mania
+LLM trained generates dataset and then feeds to model:
+https://github.com/EleutherAI/gpt-neo/blob/master/main.py
+official tensorflow models training promotes passing as datasets:
+https://github.com/tensorflow/models/blob/master/official/core/base_trainer.py#L149
+One of the first tutorials of creating data generator to come up on google:
+https://medium.com/analytics-vidhya/write-your-own-custom-data-generator-for-tensorflow-keras-1252b64e41c3

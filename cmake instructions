@@ -18,3 +18,5 @@ https://stackoverflow.com/questions/3329943/what-are-the-differences-between-git
 ROOT_ADD_PYUNITTEST(batchgen myothertest.py)
 
 https://github.com/keras-team/keras/blob/v2.15.0/keras/engine/data_adapter.py#L842
+
+g++ -g -o for_each_check.out for_each_check.cpp `root-config --cflags --glibs`

@@ -1,42 +1,20 @@
 import ROOT
 from ROOT import RDF
+import types
+from timeit import default_timer as timer
 
 def get_df():
-    df = ROOT.RDataFrame(4000)\
-            .Define("b1", "(Short_t) rdfentry_")\
-            .Define("b2", "(UShort_t) rdfentry_ * rdfentry_")
-    
+    df = ROOT.RDataFrame(10000)
+
+    for i in range(2):
+        df = df.Define(f"b{i}", "(int) rdfentry_")
+
+    df.Snapshot("myTree", "10k.root")
     return df
 
 
-def create_generators(df, sz_chunk):
-    gen_train, gen_validation = ROOT.TMVA.Experimental.CreateNumPyGenerators(
-    rdataframe=df,
-    batch_size=400,
-    chunk_size=sz_chunk,
-    target="b2",
-    validation_split=0.3,
-    shuffle=False,
-    drop_remainder=False
-    )
-
-    i = 0
-    print("Train data")
-    for x, y in gen_train:
-        print(x.shape)
-        print(y.shape)
-        i += 1
-
-    print("Validation data")
-    for x, y in gen_validation:
-        print(x.shape)
-        print(y.shape)
-        pass
-    
-    print(i)
-
 def snapshot_df(df):
-    df.Snapshot("myTree","4000.root")
+    df.Snapshot("myTree","40.root")
 
 def get_template(df):
     columns = list()
@@ -90,8 +68,39 @@ def get_template(df):
 
     print(template_string)
 
+def create_generators(df, sz_chunk, sz_batch):
+    gen_train, gen_validation = ROOT.TMVA.Experimental.CreateNumPyGenerators(
+    rdataframe=df,
+    batch_size=sz_batch,
+    chunk_size=sz_chunk,
+    target="b1",
+    validation_split=0.3,
+    shuffle=False,
+    drop_remainder=False
+    )
+
+    for i in range(2):
+        print("Training")
+        i = 0
+        for x, y in gen_train:
+            print(x)
+            print(y)
+            i += 1
+
+        print(f"Number of batches {i}")
+        
+        print("Validation")
+        i = 0
+        for x, y in gen_validation:
+            print(x)
+            print(y)
+            i += 1
+    
+        print(f"Number of batches {i}")
+
 if __name__ == "__main__":
-    # df = get_df()
+    get_df()
+    # snapshot_df(df)
     # df2 = ROOT.RDataFrame("myTree", "4000.root")
 
     """template if ROOT.RDF.RInterface<ROOT::Detail::RDF::RLoopManager,void>"""
@@ -110,8 +119,37 @@ if __name__ == "__main__":
     # print(isinstance(df2, ROOT.RDataFrame))
     
     """instance"""
-    df = ROOT.RDataFrame("myTree", "4000.root")
-    dff = ROOT.RDF.AsRNode(df)
-    dff = dff.Filter("b1%2==0")
-    print("Generating batches")
-    create_generators(dff, 1000)
+    # verbosity = ROOT.Experimental.RLogScopedVerbosity(ROOT.Detail.RDF.RDFLogChannel(), ROOT.Experimental.ELogLevel.kDebug)
+    # df = ROOT.RDataFrame("myTree", "60int.root")
+    # df2 = ROOT.RDataFrame("myTree", "60int.root")
+    # dff = df.Filter("b1 % 2 == 0", "name")
+
+    # print(dff.Count().GetValue())
+    # dff.Display(["b1","b2"], 30).Print()
+
+    print("SMTH")
+
+    # timed_list = []
+    
+    # for i in range(2):
+    #     start = timer()
+    #     df = ROOT.RDataFrame("myTree", "60int.root")
+        
+    #     create_generators(df, 20, 4)
+    #     end = timer()
+    #     timed_list.append(end - start)
+
+    # print(timed_list)
+
+    df = ROOT.RDataFrame("myTree", "20k300.root")
+    dff = df.Filter("b1 % 5 == 0", "name")
+        
+    create_generators(dff, 20, 4)
+
+    # for i in range(2):
+    #     create_generators(df, 20 ,4)
+
+    # create_generators(df, 20, 4)
+    # create_generators(df2, 20, 4)
+
+    # dff.Display().Print()
